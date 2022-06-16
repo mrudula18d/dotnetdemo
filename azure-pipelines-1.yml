@@ -7,7 +7,7 @@ trigger:
 - develop
 
 pool:
-  name: Demo1
+  name: Demo
 
 variables:
   buildConfiguration: 'Release'
