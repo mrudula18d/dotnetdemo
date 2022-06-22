@@ -17,14 +17,11 @@ variables:
   dotNetVersion: '6.0.300'
   targetRuntime: 'linux-x64'
 
-stages:
-- stage: 'Build'
-  jobs:
-  - job: 'Build'
-    steps:
-    - script: dotnet build --configuration $(buildConfiguration)
-      displayName: 'dotnet build $(buildConfiguration)'
+steps:
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'dotnet build $(buildConfiguration)'
 
+<<<<<<< HEAD
     
     task: DotNetCoreCLI@2
       displayName: Publish projects
@@ -33,3 +30,16 @@ stages:
       publishWebProjects: true
       arguments: 'dotnet build --configuration $(buildConfiguration)'
       zipAfterPublish: true
+=======
+- task: DotNetCoreCLI@2
+  displayName: Publish projects
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: 'dotnet build --configuration $(buildConfiguration)'
+    zipAfterPublish: true
+
+
+
+ 
+>>>>>>> e67a8f0dbd5da2b3a6e4c37f7d0bfd0f1b74e61c
