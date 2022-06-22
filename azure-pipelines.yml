@@ -17,34 +17,19 @@ variables:
   dotNetVersion: '6.0.300'
   targetRuntime: 'linux-x64'
 
-stages:
-- stage: 'Build'
-  jobs:
-  - job: 'Build'
-    steps:
-    - script: dotnet build --configuration $(buildConfiguration)
-      displayName: 'dotnet build $(buildConfiguration)'
 
-    - script: dotnet publish -f $(dotNetFramework) -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)
-      displayName: Publish Project 
+steps:
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'dotnet build $(buildConfiguration)'
 
-    - task: Npm@1
-      displayName: 'Client Tests'
-      inputs:
-        command: 'custom'
-        workingDir: 'ClientApp'
-        customCommand: 'run test'
-    
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
-        publishLocation: 'Container'
-  
-    # - task: DotNetCoreCLI@2
-    #   displayName: Publish Projects
-    #   inputs:
-    #     command: 'publish'
-    #     publishWebProjects: true
-    #     arguments: '--configuration $(buildConfiguration) -f $(dotNetFramework) --runtime $(targetRuntime) --self-contained -o $(Build.ArtifactStagingDirectory)'
-    #     zipAfterPublish: true
+- task: DotNetCoreCLI@2
+  displayName: Publish projects
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: 'dotnet build --configuration $(buildConfiguration)'
+    zipAfterPublish: true
+
+
+
+ 
