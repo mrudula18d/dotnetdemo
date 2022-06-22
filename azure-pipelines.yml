@@ -9,7 +9,7 @@ trigger:
 - master
 
 pool:
-  name: Demo
+  name: batch6
 
 variables:
   buildConfiguration: 'Release'
