@@ -1,4 +1,4 @@
-# ASP.NET Core
+## ASP.NET Core
 # Build and test ASP.NET Core projects targeting .NET Core.
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
@@ -17,29 +17,38 @@ variables:
   dotNetVersion: '6.0.300'
   targetRuntime: 'linux-x64'
 
-steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+stages:
+- stage: 'Build'
+  jobs:
+  - job: 'Build'
+    steps:
+    - script: dotnet build --configuration $(buildConfiguration)
+      displayName: 'dotnet build $(buildConfiguration)'
 
-<<<<<<< HEAD
+    - script: dotnet publish --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)
+      displayName: 'Publish Project' 
+
+    - script: dotnet test --configuration $(buildConfiguration) 
+      displayName: 'test'
+
     
-    task: DotNetCoreCLI@2
-      displayName: Publish projects
+    - task: Npm@1
+      displayName: 'Client Tests'
       inputs:
-      command: 'publish'
-      publishWebProjects: true
-      arguments: 'dotnet build --configuration $(buildConfiguration)'
-      zipAfterPublish: true
-=======
-- task: DotNetCoreCLI@2
-  displayName: Publish projects
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: 'dotnet build --configuration $(buildConfiguration)'
-    zipAfterPublish: true
-
-
-
- 
->>>>>>> e67a8f0dbd5da2b3a6e4c37f7d0bfd0f1b74e61c
+        command: 'custom'
+        workingDir: 'ClientApp'
+        customCommand: 'run test'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+  
+    # - task: DotNetCoreCLI@2
+    #   displayName: Publish Projects
+    #   inputs:
+    #     command: 'publish'
+    #     publishWebProjects: true
+    #     arguments: '--configuration $(buildConfiguration) -f $(dotNetFramework) --runtime $(targetRuntime) --self-contained -o $(Build.ArtifactStagingDirectory)'
+    #     zipAfterPublish: true
