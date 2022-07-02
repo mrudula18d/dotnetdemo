@@ -9,14 +9,14 @@ RUN apt-get -y install curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_16.x  | bash -
 RUN apt-get -y install nodejs
 
-COPY ["dotnet6.csproj", "/src"]
-RUN dotnet restore "dotnet6.csproj"
+COPY ["dotnetdemo.csproj", "/src"]
+RUN dotnet restore "dotnetdemo.csproj"
 COPY . .
 
-RUN dotnet build "dotnet6.csproj" -c Release -o /app/build
+RUN dotnet build "dotnetdemo.csproj" -c Release -o /app/build
 
 FROM base AS publish
-RUN dotnet publish "dotnet6.csproj" -c Release -o /app/publish
+RUN dotnet publish "dotnetdemo.csproj" -c Release -o /app/publish
 
 FROM base AS final 
 ENV ASPNETCORE_URLS http://*:5000
@@ -24,4 +24,4 @@ ENV ASPNETCORE_URLS http://*:5000
 WORKDIR /app
 COPY --from=build /app/publish .
 EXPOSE 5000
-ENTRYPOINT ["dotnet", "dotnet6.dll"]
+ENTRYPOINT ["dotnet", "dotnetdemo.dll"]
